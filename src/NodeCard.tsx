@@ -74,22 +74,17 @@ export function NodeCard({
         ✕
       </button>
 
-      <div className={'ratio' + (bounded ? ' bounded' : '')}>
-        <span className="num">{ratio.upper}</span>
-        <span className="colon">:</span>
-        <span className="den">{ratio.lower}</span>
-      </div>
-
-      <div className="note-stack">
-        <div className={'note-row upper' + (mode === 'upper' || mode === 'both' ? ' lit' : '')}>
-          <span className="note-tag">▲</span>
-          <span className="note-name">{upperNote.name}{upperNote.octave}</span>
-          <span className="note-hz">{formatHz(upperFreq)} Hz</span>
+      <div className={'ratio-block' + (bounded ? ' bounded' : '')}>
+        <div className={'ratio-col upper' + (mode === 'upper' || mode === 'both' ? ' lit' : '')}>
+          <div className="num">{ratio.upper}</div>
+          <div className="note">{upperNote.name}{upperNote.octave}</div>
+          <div className="hz">{formatHz(upperFreq)} Hz</div>
         </div>
-        <div className={'note-row lower' + (mode === 'lower' || mode === 'both' ? ' lit' : '')}>
-          <span className="note-tag">▼</span>
-          <span className="note-name">{lowerNote.name}{lowerNote.octave}</span>
-          <span className="note-hz">{formatHz(lowerFreq)} Hz</span>
+        <div className="colon">:</div>
+        <div className={'ratio-col lower' + (mode === 'lower' || mode === 'both' ? ' lit' : '')}>
+          <div className="num">{ratio.lower}</div>
+          <div className="note">{lowerNote.name}{lowerNote.octave}</div>
+          <div className="hz">{formatHz(lowerFreq)} Hz</div>
         </div>
       </div>
 

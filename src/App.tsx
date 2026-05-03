@@ -86,6 +86,11 @@ export default function App() {
   }
 
   const baseNote = noteNameFromFreq(basePitch)
+  const baseNoteLabel = (() => {
+    const c = Math.round(baseNote.centsOffset)
+    if (Math.abs(baseNote.centsOffset) < 0.5) return `${baseNote.name}${baseNote.octave}`
+    return `≈ ${baseNote.name}${baseNote.octave} ${c > 0 ? '+' : ''}${c}¢`
+  })()
 
   const playOne = (node: IntervalNode) => {
     cancelAll(setActive)
@@ -316,14 +321,17 @@ export default function App() {
               <code>C4</code>, <code>A3</code>, <code>F#5</code>).
             </InfoTip>
           </label>
-          <input
-            type="text"
-            value={basePitchInput}
-            onChange={(e) => handleBaseChange(e.target.value)}
-            style={{ width: 110 }}
-            aria-label="base pitch (Hz or note like C4)"
-            placeholder="261.63 or C4"
-          />
+          <div className="base-pitch-stack">
+            <div className="base-resolved" aria-live="polite">{baseNoteLabel}</div>
+            <input
+              type="text"
+              value={basePitchInput}
+              onChange={(e) => handleBaseChange(e.target.value)}
+              style={{ width: 110 }}
+              aria-label="base pitch (Hz or note like C4)"
+              placeholder="261.63 or C4"
+            />
+          </div>
           <button
             className={'btn-icon' + (basePlaying ? ' lit' : '')}
             onClick={playBase}

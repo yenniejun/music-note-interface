@@ -48,6 +48,16 @@ export function cancelAll(setActive: (a: ActiveState) => void, setSequencePlayin
   if (setSequencePlaying) setSequencePlaying(false)
 }
 
+export function playBaseTone(baseFreq: number, onActive?: (active: boolean) => void) {
+  const c = getCtx()
+  const start = c.currentTime + 0.03
+  scheduleTone(baseFreq, start, SINGLE_DUR)
+  if (onActive) {
+    scheduleCallback(start - c.currentTime, () => onActive(true))
+    scheduleCallback(start - c.currentTime + SINGLE_DUR, () => onActive(false))
+  }
+}
+
 function effectiveRatio(ratio: Ratio, useBounded: boolean): Ratio {
   return useBounded ? octaveBound(ratio) : ratio
 }

@@ -34,8 +34,10 @@ export function NodeCard({
     useSortable({ id: node.id })
 
   const ratio = bounded ? octaveBound(node.ratio) : node.ratio
+  const lowerFreq = baseFreq
   const upperFreq = baseFreq * ratioValue(ratio)
-  const note = noteNameFromFreq(upperFreq)
+  const upperNote = noteNameFromFreq(upperFreq)
+  const lowerNote = noteNameFromFreq(lowerFreq)
   const cents = centsFromTET(ratio)
   const centsRounded = Math.round(cents * 100) / 100
 
@@ -78,10 +80,17 @@ export function NodeCard({
         <span className="den">{ratio.lower}</span>
       </div>
 
-      <div className="note-label">
-        <span className="note-name">{note.name}{note.octave}</span>
-        {' · '}
-        {formatHz(upperFreq)} Hz
+      <div className="note-stack">
+        <div className={'note-row upper' + (mode === 'upper' || mode === 'both' ? ' lit' : '')}>
+          <span className="note-tag">▲</span>
+          <span className="note-name">{upperNote.name}{upperNote.octave}</span>
+          <span className="note-hz">{formatHz(upperFreq)} Hz</span>
+        </div>
+        <div className={'note-row lower' + (mode === 'lower' || mode === 'both' ? ' lit' : '')}>
+          <span className="note-tag">▼</span>
+          <span className="note-name">{lowerNote.name}{lowerNote.octave}</span>
+          <span className="note-hz">{formatHz(lowerFreq)} Hz</span>
+        </div>
       </div>
 
       <div className={'cents ' + centsClass}>{centsLabel}</div>

@@ -23,7 +23,7 @@ import {
   ratioValue,
   reduce,
 } from './music'
-import { cancelAll, playSequence, playSingleNode } from './audio'
+import { cancelAll, playBaseTone, playSequence, playSingleNode } from './audio'
 import { NodeCard } from './NodeCard'
 
 function InfoTip({ children }: { children: React.ReactNode }) {
@@ -59,6 +59,7 @@ export default function App() {
   const [bounded, setBounded] = useState(false)
   const [active, setActive] = useState<ActiveState>(null)
   const [seqPlaying, setSeqPlaying] = useState(false)
+  const [basePlaying, setBasePlaying] = useState(false)
 
   const [addUpper, setAddUpper] = useState('5')
   const [addLower, setAddLower] = useState('4')
@@ -99,7 +100,16 @@ export default function App() {
     playSequence(nodes, basePitch, bounded, setActive, () => setSeqPlaying(false))
   }
 
-  const stop = () => cancelAll(setActive, setSeqPlaying)
+  const stop = () => {
+    cancelAll(setActive, setSeqPlaying)
+    setBasePlaying(false)
+  }
+
+  const playBase = () => {
+    cancelAll(setActive)
+    setSeqPlaying(false)
+    playBaseTone(basePitch, setBasePlaying)
+  }
 
   const clearAll = () => {
     if (nodes.length === 0) return
@@ -314,6 +324,14 @@ export default function App() {
             aria-label="base pitch (Hz or note like C4)"
             placeholder="261.63 or C4"
           />
+          <button
+            className={'btn-icon' + (basePlaying ? ' lit' : '')}
+            onClick={playBase}
+            title="play base pitch"
+            aria-label="play base pitch"
+          >
+            ▶
+          </button>
         </div>
       </div>
 

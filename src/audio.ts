@@ -94,12 +94,15 @@ export function playSingleNode(
   }
 }
 
+export type SequenceMode = 'top' | 'harmony'
+
 export function playSequence(
   nodes: IntervalNode[],
   baseFreq: number,
   useBounded: boolean,
   setActive: (a: ActiveState) => void,
   onDone: () => void,
+  mode: SequenceMode = 'top',
 ) {
   const c = getCtx()
   const start = c.currentTime + 0.03
@@ -107,8 +110,14 @@ export function playSequence(
     const ratio = effectiveRatio(node.ratio, useBounded)
     const upperFreq = baseFreq * ratioValue(ratio)
     const at = start + i * SEQ_DUR
-    scheduleTone(upperFreq, at, SEQ_DUR)
-    scheduleCallback(at - c.currentTime, () => setActive({ nodeId: node.id, mode: 'upper' }))
+    if (mode === 'harmony') {
+      scheduleTone(baseFreq, at, SEQ_DUR)
+      scheduleTone(upperFreq, at, SEQ_DUR)
+      scheduleCallback(at - c.currentTime, () => setActive({ nodeId: node.id, mode: 'both' }))
+    } else {
+      scheduleTone(upperFreq, at, SEQ_DUR)
+      scheduleCallback(at - c.currentTime, () => setActive({ nodeId: node.id, mode: 'upper' }))
+    }
   })
   const totalDelay = start - c.currentTime + nodes.length * SEQ_DUR
   scheduleCallback(totalDelay, () => {

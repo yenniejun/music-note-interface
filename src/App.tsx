@@ -23,7 +23,7 @@ import {
   ratioValue,
   reduce,
 } from './music'
-import { cancelAll, playBaseTone, playSequence, playSingleNode } from './audio'
+import { cancelAll, playBaseTone, playSequence, playSingleNode, type SequenceMode } from './audio'
 import { NodeCard } from './NodeCard'
 
 function ConfirmModal({
@@ -117,6 +117,7 @@ export default function App() {
   const [seqPlaying, setSeqPlaying] = useState(false)
   const [basePlaying, setBasePlaying] = useState(false)
   const [confirmClearOpen, setConfirmClearOpen] = useState(false)
+  const [seqMode, setSeqMode] = useState<SequenceMode>('top')
 
   const [addUpper, setAddUpper] = useState('5')
   const [addLower, setAddLower] = useState('4')
@@ -159,7 +160,7 @@ export default function App() {
     if (nodes.length === 0) return
     cancelAll(setActive)
     setSeqPlaying(true)
-    playSequence(nodes, basePitch, bounded, setActive, () => setSeqPlaying(false))
+    playSequence(nodes, basePitch, bounded, setActive, () => setSeqPlaying(false), seqMode)
   }
 
   const stop = () => {
@@ -331,6 +332,24 @@ export default function App() {
           <button className="btn-primary" onClick={playAll} disabled={nodes.length === 0 || seqPlaying}>
             ▶ play sequence
           </button>
+          <div className="mode-toggle compact" role="group" aria-label="sequence playback mode">
+            <button
+              type="button"
+              className={seqMode === 'top' ? 'on' : ''}
+              onClick={() => setSeqMode('top')}
+              title="play top note of each ratio (a melody / scale)"
+            >
+              separate
+            </button>
+            <button
+              type="button"
+              className={seqMode === 'harmony' ? 'on' : ''}
+              onClick={() => setSeqMode('harmony')}
+              title="play each ratio as a dyad (harmonies in sequence)"
+            >
+              together
+            </button>
+          </div>
           {(seqPlaying || active) && (
             <button onClick={stop}>■ stop</button>
           )}

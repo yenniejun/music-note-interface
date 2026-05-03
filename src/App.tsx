@@ -112,7 +112,7 @@ export default function App() {
   const [nodes, setNodes] = useState<IntervalNode[]>(STARTER)
   const [basePitch, setBasePitch] = useState<number>(MIDDLE_C)
   const [basePitchInput, setBasePitchInput] = useState<string>('261.63')
-  const [bounded, setBounded] = useState(false)
+  const [bounded, setBounded] = useState(true)
   const [active, setActive] = useState<ActiveState>(null)
   const [seqPlaying, setSeqPlaying] = useState(false)
   const [basePlaying, setBasePlaying] = useState(false)
@@ -226,7 +226,14 @@ export default function App() {
         // skip
       }
     }
-    setNodes((ns) => [...ns, ...generated])
+    setNodes((ns) => {
+      const all = [...ns, ...generated]
+      return [...all].sort((a, b) => {
+        const av = ratioValue(bounded ? octaveBound(a.ratio) : a.ratio)
+        const bv = ratioValue(bounded ? octaveBound(b.ratio) : b.ratio)
+        return av - bv
+      })
+    })
   }
 
   const onDragEnd = (e: DragEndEvent) => {

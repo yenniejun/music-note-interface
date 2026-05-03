@@ -26,6 +26,15 @@ import {
 import { cancelAll, playSequence, playSingleNode } from './audio'
 import { NodeCard } from './NodeCard'
 
+function InfoTip({ children }: { children: React.ReactNode }) {
+  return (
+    <span className="info-tip" tabIndex={0} role="img" aria-label="info">
+      <span aria-hidden="true">ⓘ</span>
+      <span className="info-tip-bubble">{children}</span>
+    </span>
+  )
+}
+
 const MIDDLE_C = 261.63
 
 function newId() {
@@ -91,6 +100,14 @@ export default function App() {
   }
 
   const stop = () => cancelAll(setActive, setSeqPlaying)
+
+  const clearAll = () => {
+    if (nodes.length === 0) return
+    const ok = window.confirm(`Clear all ${nodes.length} node${nodes.length === 1 ? '' : 's'}?`)
+    if (!ok) return
+    cancelAll(setActive, setSeqPlaying)
+    setNodes([])
+  }
 
   const addNode = () => {
     const u = parseInt(addUpper, 10)
@@ -250,6 +267,17 @@ export default function App() {
 
         <div className="toolbar-divider" />
 
+        <button
+          className="btn-ghost btn-danger"
+          onClick={clearAll}
+          disabled={nodes.length === 0}
+          title="remove all nodes"
+        >
+          clear all
+        </button>
+
+        <div className="toolbar-divider" />
+
         <label className="toggle">
           <input
             type="checkbox"
@@ -257,12 +285,27 @@ export default function App() {
             onChange={(e) => setBounded(e.target.checked)}
           />
           bound to one octave
+          <InfoTip>
+            Folds every ratio into the range <strong>1 ≤ r &lt; 2</strong> by
+            multiplying or dividing by 2 (the octave). For example, 9:4 (above
+            an octave) becomes 9:8, and 2:3 (below the base) becomes 4:3. Your
+            original ratios are kept — only the display and playback change.
+          </InfoTip>
         </label>
 
         <div className="toolbar-spacer" />
 
         <div className="toolbar-group">
-          <label className="toggle" style={{ paddingRight: 0 }}>base</label>
+          <label className="toggle" style={{ paddingRight: 0, gap: 6 }}>
+            base
+            <InfoTip>
+              The <strong>base pitch</strong> — the frequency the lower number
+              of every ratio is anchored to. With a 3:2 ratio over a base of
+              C4 (261.63 Hz), the upper note becomes G4 (392.00 Hz). Type a
+              frequency in Hz (e.g. <code>440</code>) or a note name (e.g.{' '}
+              <code>C4</code>, <code>A3</code>, <code>F#5</code>).
+            </InfoTip>
+          </label>
           <input
             type="text"
             value={basePitchInput}

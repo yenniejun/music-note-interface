@@ -23,7 +23,7 @@ import {
   ratioValue,
   reduce,
 } from './music'
-import { cancelAll, playBaseTone, playSequence, playSingleNode, type SequenceMode } from './audio'
+import { cancelAll, playBaseTone, playSequence, playSingleNode } from './audio'
 import { NodeCard } from './NodeCard'
 
 function ConfirmModal({
@@ -117,7 +117,6 @@ export default function App() {
   const [seqPlaying, setSeqPlaying] = useState(false)
   const [basePlaying, setBasePlaying] = useState(false)
   const [confirmClearOpen, setConfirmClearOpen] = useState(false)
-  const [seqMode, setSeqMode] = useState<SequenceMode>('top')
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc')
 
   const [addUpper, setAddUpper] = useState('5')
@@ -161,7 +160,7 @@ export default function App() {
     if (nodes.length === 0) return
     cancelAll(setActive)
     setSeqPlaying(true)
-    playSequence(nodes, basePitch, bounded, setActive, () => setSeqPlaying(false), seqMode)
+    playSequence(nodes, basePitch, bounded, setActive, () => setSeqPlaying(false))
   }
 
   const stop = () => {
@@ -215,6 +214,13 @@ export default function App() {
     sortNodes(sortDir)
     setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'))
   }
+
+  const setAllPlayMode = (mode: 'together' | 'separate') => {
+    setNodes((ns) => ns.map((n) => (n.playMode === mode ? n : { ...n, playMode: mode })))
+  }
+
+  const allTogether = nodes.length > 0 && nodes.every((n) => n.playMode === 'together')
+  const allSeparate = nodes.length > 0 && nodes.every((n) => n.playMode === 'separate')
 
   const generatePower = () => {
     const u = parseInt(powUpper, 10)
@@ -343,20 +349,22 @@ export default function App() {
           >
             {seqPlaying ? '■ stop' : '▶ play sequence'}
           </button>
-          <div className="mode-toggle compact vertical" role="group" aria-label="sequence playback mode" style={{ marginLeft: 8 }}>
+          <div className="mode-toggle compact vertical" role="group" aria-label="set all nodes' play mode" style={{ marginLeft: 8 }}>
             <button
               type="button"
-              className={seqMode === 'top' ? 'on' : ''}
-              onClick={() => setSeqMode('top')}
-              title="play top note of each ratio (a melody / scale)"
+              className={allSeparate ? 'on' : ''}
+              onClick={() => setAllPlayMode('separate')}
+              disabled={nodes.length === 0}
+              title="set every node to separate (arpeggio: lower → upper)"
             >
               separate
             </button>
             <button
               type="button"
-              className={seqMode === 'harmony' ? 'on' : ''}
-              onClick={() => setSeqMode('harmony')}
-              title="play each ratio as a dyad (harmonies in sequence)"
+              className={allTogether ? 'on' : ''}
+              onClick={() => setAllPlayMode('together')}
+              disabled={nodes.length === 0}
+              title="set every node to together (lower + upper at once)"
             >
               together
             </button>

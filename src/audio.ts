@@ -94,33 +94,43 @@ export function playSingleNode(
   }
 }
 
-export type SequenceMode = 'top' | 'harmony'
-
 export function playSequence(
   nodes: IntervalNode[],
   baseFreq: number,
   useBounded: boolean,
   setActive: (a: ActiveState) => void,
   onDone: () => void,
-  mode: SequenceMode = 'top',
 ) {
   const c = getCtx()
-  const start = c.currentTime + 0.03
-  nodes.forEach((node, i) => {
+  let cursor = c.currentTime + 0.03
+
+  for (const node of nodes) {
     const ratio = effectiveRatio(node.ratio, useBounded)
+    const lowerFreq = baseFreq
     const upperFreq = baseFreq * ratioValue(ratio)
-    const at = start + i * SEQ_DUR
-    if (mode === 'harmony') {
-      scheduleTone(baseFreq, at, SEQ_DUR)
-      scheduleTone(upperFreq, at, SEQ_DUR)
-      scheduleCallback(at - c.currentTime, () => setActive({ nodeId: node.id, mode: 'both' }))
+
+    if (node.playMode === 'together') {
+      scheduleTone(lowerFreq, cursor, SEQ_DUR)
+      scheduleTone(upperFreq, cursor, SEQ_DUR)
+      scheduleCallback(cursor - c.currentTime, () => setActive({ nodeId: node.id, mode: 'both' }))
+      cursor += SEQ_DUR
     } else {
-      scheduleTone(upperFreq, at, SEQ_DUR)
-      scheduleCallback(at - c.currentTime, () => setActive({ nodeId: node.id, mode: 'upper' }))
+      const ascending = node.direction === 'ascending'
+      const firstFreq = ascending ? lowerFreq : upperFreq
+      const secondFreq = ascending ? upperFreq : lowerFreq
+      const firstSide: 'lower' | 'upper' = ascending ? 'lower' : 'upper'
+      const secondSide: 'lower' | 'upper' = ascending ? 'upper' : 'lower'
+
+      scheduleTone(firstFreq, cursor, SEQ_DUR)
+      scheduleCallback(cursor - c.currentTime, () => setActive({ nodeId: node.id, mode: firstSide }))
+      cursor += SEQ_DUR + GAP
+      scheduleTone(secondFreq, cursor, SEQ_DUR)
+      scheduleCallback(cursor - c.currentTime, () => setActive({ nodeId: node.id, mode: secondSide }))
+      cursor += SEQ_DUR
     }
-  })
-  const totalDelay = start - c.currentTime + nodes.length * SEQ_DUR
-  scheduleCallback(totalDelay, () => {
+  }
+
+  scheduleCallback(cursor - c.currentTime, () => {
     setActive(null)
     onDone()
   })

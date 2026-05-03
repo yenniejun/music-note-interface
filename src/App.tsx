@@ -215,12 +215,13 @@ export default function App() {
     setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'))
   }
 
-  const setAllPlayMode = (mode: 'together' | 'separate') => {
+  const setAllPlayMode = (mode: 'together' | 'separate' | 'top') => {
     setNodes((ns) => ns.map((n) => (n.playMode === mode ? n : { ...n, playMode: mode })))
   }
 
   const allTogether = nodes.length > 0 && nodes.every((n) => n.playMode === 'together')
   const allSeparate = nodes.length > 0 && nodes.every((n) => n.playMode === 'separate')
+  const allTop = nodes.length > 0 && nodes.every((n) => n.playMode === 'top')
 
   const generatePower = () => {
     const u = parseInt(powUpper, 10)
@@ -352,6 +353,15 @@ export default function App() {
           <div className="mode-toggle compact vertical" role="group" aria-label="set all nodes' play mode" style={{ marginLeft: 8 }}>
             <button
               type="button"
+              className={allTop ? 'on' : ''}
+              onClick={() => setAllPlayMode('top')}
+              disabled={nodes.length === 0}
+              title="set every node to top (only the upper note plays — a melody / scale)"
+            >
+              top only
+            </button>
+            <button
+              type="button"
               className={allSeparate ? 'on' : ''}
               onClick={() => setAllPlayMode('separate')}
               disabled={nodes.length === 0}
@@ -364,7 +374,7 @@ export default function App() {
               className={allTogether ? 'on' : ''}
               onClick={() => setAllPlayMode('together')}
               disabled={nodes.length === 0}
-              title="set every node to together (lower + upper at once)"
+              title="set every node to together (lower + upper simultaneously)"
             >
               together
             </button>

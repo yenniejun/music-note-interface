@@ -1,6 +1,6 @@
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
-import type { ActiveState, IntervalNode } from './types'
+import type { ActiveState, IntervalNode, PlayMode } from './types'
 import {
   centsFromTET,
   formatHz,
@@ -16,7 +16,7 @@ type Props = {
   active: ActiveState
   onPlay: () => void
   onDelete: () => void
-  onChangePlayMode: (mode: 'together' | 'separate') => void
+  onChangePlayMode: (mode: PlayMode) => void
   onChangeDirection: (dir: 'ascending' | 'descending') => void
 }
 
@@ -103,20 +103,27 @@ export function NodeCard({
           <button className="btn-primary" onClick={onPlay}>▶ play</button>
         </div>
 
-        <div className="mode-toggle" role="group" aria-label="play mode">
+        <div className="mode-toggle three" role="group" aria-label="play mode">
           <button
             type="button"
-            className={node.playMode === 'together' ? 'on' : ''}
-            onClick={() => onChangePlayMode('together')}
+            className={node.playMode === 'top' ? 'on' : ''}
+            onClick={() => onChangePlayMode('top')}
           >
-            together
+            top
           </button>
           <button
             type="button"
             className={node.playMode === 'separate' ? 'on' : ''}
             onClick={() => onChangePlayMode('separate')}
           >
-            separate
+            sep
+          </button>
+          <button
+            type="button"
+            className={node.playMode === 'together' ? 'on' : ''}
+            onClick={() => onChangePlayMode('together')}
+          >
+            both
           </button>
         </div>
 

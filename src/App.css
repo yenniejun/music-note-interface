@@ -515,6 +515,12 @@
   min-width: 70px;
 }
 
+.mode-toggle.three button {
+  padding: 4px 4px;
+  font-size: 0.66rem;
+  letter-spacing: 0.02em;
+}
+
 .play-sequence-btn {
   min-width: 168px;
   text-align: center;

@@ -74,7 +74,11 @@ export function playSingleNode(
   const upperFreq = baseFreq * ratioValue(ratio)
   const start = c.currentTime + 0.03
 
-  if (node.playMode === 'together') {
+  if (node.playMode === 'top') {
+    scheduleTone(upperFreq, start, SINGLE_DUR)
+    scheduleCallback(start - c.currentTime, () => setActive({ nodeId: node.id, mode: 'upper' }))
+    scheduleCallback(start - c.currentTime + SINGLE_DUR, () => setActive(null))
+  } else if (node.playMode === 'together') {
     scheduleTone(lowerFreq, start, SINGLE_DUR)
     scheduleTone(upperFreq, start, SINGLE_DUR)
     scheduleCallback(start - c.currentTime, () => setActive({ nodeId: node.id, mode: 'both' }))
@@ -109,7 +113,11 @@ export function playSequence(
     const lowerFreq = baseFreq
     const upperFreq = baseFreq * ratioValue(ratio)
 
-    if (node.playMode === 'together') {
+    if (node.playMode === 'top') {
+      scheduleTone(upperFreq, cursor, SEQ_DUR)
+      scheduleCallback(cursor - c.currentTime, () => setActive({ nodeId: node.id, mode: 'upper' }))
+      cursor += SEQ_DUR
+    } else if (node.playMode === 'together') {
       scheduleTone(lowerFreq, cursor, SEQ_DUR)
       scheduleTone(upperFreq, cursor, SEQ_DUR)
       scheduleCallback(cursor - c.currentTime, () => setActive({ nodeId: node.id, mode: 'both' }))

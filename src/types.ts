@@ -1,6 +1,6 @@
 export type Ratio = { lower: number; upper: number }
 
-export type PlayMode = 'together' | 'separate'
+export type PlayMode = 'together' | 'separate' | 'top'
 export type Direction = 'ascending' | 'descending'
 
 export type IntervalNode = {

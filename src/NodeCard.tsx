@@ -54,6 +54,14 @@ export function NodeCard({
     ? '±0.00¢'
     : `${centsRounded > 0 ? '+' : ''}${centsRounded.toFixed(2)}¢`
 
+  const maxDigits = Math.max(String(ratio.upper).length, String(ratio.lower).length)
+  const sizeClass =
+    maxDigits >= 6 ? ' sz-xxs'
+    : maxDigits >= 5 ? ' sz-xs'
+    : maxDigits >= 4 ? ' sz-sm'
+    : maxDigits >= 3 ? ' sz-md'
+    : ''
+
   return (
     <div
       ref={setNodeRef}
@@ -74,7 +82,7 @@ export function NodeCard({
         ✕
       </button>
 
-      <div className={'ratio-block' + (bounded ? ' bounded' : '')}>
+      <div className={'ratio-block' + sizeClass + (bounded ? ' bounded' : '')}>
         <div className={'ratio-col upper' + (mode === 'upper' || mode === 'both' ? ' lit' : '')}>
           <div className="num">{ratio.upper}</div>
           <div className="note">{upperNote.name}{upperNote.octave}</div>

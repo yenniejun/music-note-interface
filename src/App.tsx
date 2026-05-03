@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import {
   DndContext,
   PointerSensor,
@@ -25,6 +25,62 @@ import {
 } from './music'
 import { cancelAll, playBaseTone, playSequence, playSingleNode } from './audio'
 import { NodeCard } from './NodeCard'
+
+function ConfirmModal({
+  open,
+  title,
+  message,
+  confirmLabel,
+  onConfirm,
+  onCancel,
+}: {
+  open: boolean
+  title: string
+  message: React.ReactNode
+  confirmLabel: string
+  onConfirm: () => void
+  onCancel: () => void
+}) {
+  const confirmRef = useRef<HTMLButtonElement>(null)
+
+  useEffect(() => {
+    if (!open) return
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onCancel()
+      else if (e.key === 'Enter') onConfirm()
+    }
+    document.addEventListener('keydown', handler)
+    confirmRef.current?.focus()
+    return () => document.removeEventListener('keydown', handler)
+  }, [open, onCancel, onConfirm])
+
+  if (!open) return null
+
+  return (
+    <div className="modal-backdrop" onClick={onCancel} role="presentation">
+      <div
+        className="modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modal-title"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <h2 id="modal-title" className="modal-title">{title}</h2>
+        <div className="modal-body">{message}</div>
+        <div className="modal-actions">
+          <button className="btn-ghost" onClick={onCancel}>Cancel</button>
+          <button
+            ref={confirmRef}
+            className="btn-primary btn-confirm-danger"
+            onClick={onConfirm}
+          >
+            {confirmLabel}
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
 
 function InfoTip({ children }: { children: React.ReactNode }) {
   return (
@@ -60,6 +116,7 @@ export default function App() {
   const [active, setActive] = useState<ActiveState>(null)
   const [seqPlaying, setSeqPlaying] = useState(false)
   const [basePlaying, setBasePlaying] = useState(false)
+  const [confirmClearOpen, setConfirmClearOpen] = useState(false)
 
   const [addUpper, setAddUpper] = useState('5')
   const [addLower, setAddLower] = useState('4')
@@ -116,12 +173,15 @@ export default function App() {
     playBaseTone(basePitch, setBasePlaying)
   }
 
-  const clearAll = () => {
+  const requestClearAll = () => {
     if (nodes.length === 0) return
-    const ok = window.confirm(`Clear all ${nodes.length} node${nodes.length === 1 ? '' : 's'}?`)
-    if (!ok) return
+    setConfirmClearOpen(true)
+  }
+
+  const performClearAll = () => {
     cancelAll(setActive, setSeqPlaying)
     setNodes([])
+    setConfirmClearOpen(false)
   }
 
   const addNode = () => {
@@ -284,7 +344,7 @@ export default function App() {
 
         <button
           className="btn-ghost btn-danger"
-          onClick={clearAll}
+          onClick={requestClearAll}
           disabled={nodes.length === 0}
           title="remove all nodes"
         >
@@ -376,6 +436,21 @@ export default function App() {
           </div>
         </SortableContext>
       </DndContext>
+
+      <ConfirmModal
+        open={confirmClearOpen}
+        title="Clear all nodes?"
+        message={
+          <>
+            This will remove{' '}
+            <strong>{nodes.length} node{nodes.length === 1 ? '' : 's'}</strong>{' '}
+            from the sequence. The action can't be undone.
+          </>
+        }
+        confirmLabel="Clear all"
+        onConfirm={performClearAll}
+        onCancel={() => setConfirmClearOpen(false)}
+      />
     </div>
   )
 }

@@ -352,6 +352,19 @@
 }
 .ratio-col.lit .num { animation: pulse 0.6s ease; }
 
+/* shrink the numerals when ratios get long-digit, so they fit the card */
+.ratio-block.sz-md .num    { font-size: 2.05rem; }
+.ratio-block.sz-md .colon  { font-size: 1.9rem; padding-top: 6px; }
+
+.ratio-block.sz-sm .num    { font-size: 1.65rem; }
+.ratio-block.sz-sm .colon  { font-size: 1.55rem; padding-top: 8px; }
+
+.ratio-block.sz-xs .num    { font-size: 1.35rem; }
+.ratio-block.sz-xs .colon  { font-size: 1.3rem;  padding-top: 10px; }
+
+.ratio-block.sz-xxs .num   { font-size: 1.1rem;  word-break: break-all; }
+.ratio-block.sz-xxs .colon { font-size: 1.05rem; padding-top: 12px; }
+
 @keyframes pulse {
   0% { transform: scale(1); }
   30% { transform: scale(1.08); }
@@ -516,4 +529,78 @@
 .info-tip:focus-visible .info-tip-bubble {
   opacity: 1;
   transform: translate(-50%, 0);
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(58, 44, 18, 0.42);
+  backdrop-filter: blur(2px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  animation: fade-in 0.15s ease;
+  padding: 24px;
+}
+
+.modal {
+  background: var(--surface);
+  border: 1px solid var(--border-soft);
+  border-radius: 14px;
+  box-shadow:
+    0 1px 2px rgba(58, 44, 18, 0.06),
+    0 12px 40px rgba(58, 44, 18, 0.22);
+  padding: 24px 24px 18px;
+  width: 100%;
+  max-width: 380px;
+  animation: modal-in 0.18s cubic-bezier(0.2, 0.8, 0.4, 1);
+}
+
+.modal-title {
+  font-family: var(--serif);
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: var(--ink);
+  margin-bottom: 8px;
+  letter-spacing: 0.005em;
+}
+
+.modal-body {
+  font-family: var(--sans);
+  font-size: 0.92rem;
+  color: var(--ink-soft);
+  line-height: 1.5;
+  margin-bottom: 20px;
+}
+
+.modal-body strong {
+  color: var(--ink);
+  font-weight: 500;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.btn-confirm-danger {
+  background: #b04a30;
+  border-color: #b04a30;
+  color: #fff;
+}
+.btn-confirm-danger:hover:not(:disabled) {
+  background: #973d27;
+  border-color: #973d27;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes modal-in {
+  from { opacity: 0; transform: translateY(8px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
 }

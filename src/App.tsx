@@ -337,13 +337,13 @@ export default function App() {
       <div className="toolbar">
         <div className="toolbar-group">
           <button
-            className={seqPlaying ? 'btn-stop' : 'btn-primary'}
+            className={seqPlaying ? 'btn-stop play-sequence-btn' : 'btn-primary play-sequence-btn'}
             onClick={seqPlaying ? stop : playAll}
             disabled={!seqPlaying && nodes.length === 0}
           >
             {seqPlaying ? '■ stop' : '▶ play sequence'}
           </button>
-          <div className="mode-toggle compact" role="group" aria-label="sequence playback mode">
+          <div className="mode-toggle compact vertical" role="group" aria-label="sequence playback mode" style={{ marginLeft: 8 }}>
             <button
               type="button"
               className={seqMode === 'top' ? 'on' : ''}
@@ -372,17 +372,6 @@ export default function App() {
           title={`sort by ratio value, ${sortDir === 'asc' ? 'low → high' : 'high → low'}`}
         >
           sort {sortDir === 'asc' ? '↑' : '↓'}
-        </button>
-
-        <div className="toolbar-divider" />
-
-        <button
-          className="btn-ghost btn-danger"
-          onClick={requestClearAll}
-          disabled={nodes.length === 0}
-          title="remove all nodes"
-        >
-          clear all
         </button>
 
         <div className="toolbar-divider" />
@@ -436,6 +425,23 @@ export default function App() {
             ▶
           </button>
         </div>
+      </div>
+
+      <div className="graph-header">
+        <div className="graph-header-meta">
+          {nodes.length > 0 && (
+            <span>{nodes.length} node{nodes.length === 1 ? '' : 's'}</span>
+          )}
+        </div>
+        {nodes.length > 0 && (
+          <button
+            className="btn-ghost btn-danger graph-header-clear"
+            onClick={requestClearAll}
+            title="remove all nodes"
+          >
+            clear all
+          </button>
+        )}
       </div>
 
       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}>

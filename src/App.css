@@ -192,12 +192,41 @@
 
 .btn-danger { color: #a04030; }
 
+.graph-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 8px 0;
+  min-height: 32px;
+  gap: 12px;
+}
+
+.graph-header-meta {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  color: var(--ink-faint);
+  text-transform: uppercase;
+}
+
+.graph-header-clear {
+  font-size: 0.82rem;
+  padding: 4px 10px;
+  opacity: 0.7;
+  transition: opacity 0.15s ease, background-color 0.15s ease;
+}
+
+.graph-header-clear:hover:not(:disabled) {
+  opacity: 1;
+  background: rgba(176, 74, 48, 0.12);
+}
+
 .graph {
   display: flex;
   flex-wrap: wrap;
   align-items: stretch;
   gap: 0;
-  padding: 24px 4px;
+  padding: 12px 4px 24px;
   position: relative;
 }
 
@@ -475,6 +504,20 @@
 .mode-toggle.compact button {
   padding: 4px 10px;
   font-size: 0.7rem;
+}
+
+.mode-toggle.vertical {
+  flex-direction: column;
+}
+.mode-toggle.vertical button {
+  flex: none;
+  text-align: center;
+  min-width: 70px;
+}
+
+.play-sequence-btn {
+  min-width: 168px;
+  text-align: center;
 }
 
 .power-row {

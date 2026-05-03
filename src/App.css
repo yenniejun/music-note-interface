@@ -272,8 +272,30 @@
 
 .node-delete {
   position: absolute;
-  top: 6px;
-  right: 6px;
+  top: 4px;
+  right: 4px;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  font-size: 1rem;
+  line-height: 1;
+  border-radius: 8px;
+  opacity: 0.55;
+  transition: opacity 0.15s ease, background-color 0.15s ease, color 0.15s ease;
+}
+
+.node:hover .node-delete { opacity: 1; }
+
+.node-delete:hover:not(:disabled) {
+  background: rgba(176, 74, 48, 0.12);
+  color: #b04a30;
+  opacity: 1;
+}
+
+.node-delete:focus-visible {
+  opacity: 1;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(176, 74, 48, 0.25);
 }
 
 .ratio-block {

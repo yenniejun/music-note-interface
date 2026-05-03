@@ -32,12 +32,10 @@ beforeAll(() => {
 })
 
 describe('App', () => {
-  it('renders the starter 3:2 node', () => {
+  it('renders the empty state on first load', () => {
     render(<App />)
     expect(screen.getByText('Interval Explorer')).toBeTruthy()
-    // ratio 3:2 should render its parts
-    expect(screen.getByText('3')).toBeTruthy()
-    expect(screen.getByText('2')).toBeTruthy()
+    expect(screen.getByText(/no nodes yet/i)).toBeTruthy()
   })
 
   it('adds a new node when the add form is submitted', () => {
@@ -47,7 +45,6 @@ describe('App', () => {
     fireEvent.change(upper, { target: { value: '5' } })
     fireEvent.change(lower, { target: { value: '4' } })
     fireEvent.click(screen.getByRole('button', { name: 'add' }))
-    // both 3:2 starter and 5:4 should be in the doc
     expect(screen.getAllByText('5').length).toBeGreaterThan(0)
     expect(screen.getAllByText('4').length).toBeGreaterThan(0)
   })
@@ -55,9 +52,8 @@ describe('App', () => {
   it('generates a power sequence', () => {
     render(<App />)
     fireEvent.click(screen.getByRole('button', { name: 'generate' }))
-    // the default range is -1 to 5 → 7 nodes, plus the starter 3:2 = 8 total
-    // we'll just check that more nodes than the starter exist by counting play buttons
+    // default range -1 to 5 → 7 nodes, each with a "▶ play" button
     const playButtons = screen.getAllByRole('button', { name: /▶ play$/ })
-    expect(playButtons.length).toBeGreaterThan(1)
+    expect(playButtons.length).toBeGreaterThanOrEqual(7)
   })
 })

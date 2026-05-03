@@ -43,8 +43,8 @@ export function power(r: Ratio, n: number): Ratio {
 
 export function octaveBound(r: Ratio): Ratio {
   let { upper, lower } = r
-  // 1 ≤ upper/lower < 2
-  while (upper / lower >= 2) lower *= 2
+  // 1 ≤ upper/lower ≤ 2 (both endpoints included, so 2:1 stays as 2:1)
+  while (upper / lower > 2) lower *= 2
   while (upper / lower < 1) upper *= 2
   return reduce(upper, lower)
 }

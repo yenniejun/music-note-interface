@@ -63,24 +63,33 @@ describe('octaveBound', () => {
     expect(octaveBound({ upper: 3, lower: 2 })).toEqual({ upper: 3, lower: 2 })
     expect(octaveBound({ upper: 1, lower: 1 })).toEqual({ upper: 1, lower: 1 })
   })
+  it('keeps the octave (2:1) intact since the range is inclusive', () => {
+    expect(octaveBound({ upper: 2, lower: 1 })).toEqual({ upper: 2, lower: 1 })
+  })
   it('halves down when above 2', () => {
     expect(octaveBound({ upper: 9, lower: 4 })).toEqual({ upper: 9, lower: 8 })
     expect(octaveBound({ upper: 27, lower: 8 })).toEqual({ upper: 27, lower: 16 })
+  })
+  it('halves powers of 2 down to the octave', () => {
+    expect(octaveBound({ upper: 4, lower: 1 })).toEqual({ upper: 2, lower: 1 })
+    expect(octaveBound({ upper: 8, lower: 1 })).toEqual({ upper: 2, lower: 1 })
   })
   it('doubles up when below 1', () => {
     expect(octaveBound({ upper: 2, lower: 3 })).toEqual({ upper: 4, lower: 3 })
     expect(octaveBound({ upper: 4, lower: 9 })).toEqual({ upper: 16, lower: 9 })
   })
-  it('produces ratio in [1, 2)', () => {
+  it('produces ratio in [1, 2]', () => {
     for (const r of [
       { upper: 7, lower: 1 },
       { upper: 1, lower: 7 },
       { upper: 81, lower: 64 },
       { upper: 5, lower: 3 },
+      { upper: 2, lower: 1 },
+      { upper: 1, lower: 2 },
     ]) {
       const v = ratioValue(octaveBound(r))
       expect(v).toBeGreaterThanOrEqual(1)
-      expect(v).toBeLessThan(2)
+      expect(v).toBeLessThanOrEqual(2)
     }
   })
 })

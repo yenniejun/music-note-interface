@@ -106,7 +106,7 @@ function makeNode(ratio: Ratio): IntervalNode {
   }
 }
 
-const STARTER: IntervalNode[] = [makeNode({ upper: 3, lower: 2 })]
+const STARTER: IntervalNode[] = []
 
 export default function App() {
   const [nodes, setNodes] = useState<IntervalNode[]>(STARTER)
@@ -361,10 +361,11 @@ export default function App() {
           />
           bound to one octave
           <InfoTip>
-            Folds every ratio into the range <strong>1 ≤ r &lt; 2</strong> by
-            multiplying or dividing by 2 (the octave). For example, 9:4 (above
-            an octave) becomes 9:8, and 2:3 (below the base) becomes 4:3. Your
-            original ratios are kept — only the display and playback change.
+            Folds every ratio into the range <strong>1 ≤ r ≤ 2</strong> by
+            multiplying or dividing by 2 (the octave). The unison (1:1) and
+            the octave (2:1) are preserved; 9:4 becomes 9:8, and 2:3 becomes
+            4:3. Your original ratios are kept — only the display and playback
+            change.
           </InfoTip>
         </label>
 

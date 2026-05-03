@@ -141,6 +141,23 @@
   border-color: #a36527;
 }
 
+.btn-stop {
+  background: #b04a30;
+  border-color: #b04a30;
+  color: #fff;
+  font-weight: 500;
+  animation: stop-pulse 1.4s ease-in-out infinite;
+}
+.btn-stop:hover:not(:disabled) {
+  background: #973d27;
+  border-color: #973d27;
+}
+
+@keyframes stop-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(176, 74, 48, 0.0); }
+  50%      { box-shadow: 0 0 0 5px rgba(176, 74, 48, 0.18); }
+}
+
 .btn-ghost {
   background: transparent;
   border-color: transparent;

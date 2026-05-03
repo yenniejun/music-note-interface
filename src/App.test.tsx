@@ -34,7 +34,7 @@ beforeAll(() => {
 describe('App', () => {
   it('renders the empty state on first load', () => {
     render(<App />)
-    expect(screen.getByText('Interval Explorer')).toBeTruthy()
+    expect(screen.getByText('Pythagorean Interval Explorer')).toBeTruthy()
     expect(screen.getByText(/no nodes yet/i)).toBeTruthy()
   })
 

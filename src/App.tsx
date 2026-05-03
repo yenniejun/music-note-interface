@@ -118,6 +118,7 @@ export default function App() {
   const [basePlaying, setBasePlaying] = useState(false)
   const [confirmClearOpen, setConfirmClearOpen] = useState(false)
   const [seqMode, setSeqMode] = useState<SequenceMode>('top')
+  const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc')
 
   const [addUpper, setAddUpper] = useState('5')
   const [addLower, setAddLower] = useState('4')
@@ -209,6 +210,12 @@ export default function App() {
     )
   }
 
+  const toggleSort = () => {
+    if (nodes.length < 2) return
+    sortNodes(sortDir)
+    setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'))
+  }
+
   const generatePower = () => {
     const u = parseInt(powUpper, 10)
     const l = parseInt(powLower, 10)
@@ -254,7 +261,7 @@ export default function App() {
     <div className="app">
       <header className="header">
         <div>
-          <h1 className="title">Interval Explorer</h1>
+          <h1 className="title">Pythagorean Interval Explorer</h1>
           <p className="subtitle">composing scales from just-intonation ratios</p>
         </div>
         <div className="hint">base · {baseNote.name}{baseNote.octave} · {formatHz(basePitch)} Hz</div>
@@ -329,8 +336,12 @@ export default function App() {
 
       <div className="toolbar">
         <div className="toolbar-group">
-          <button className="btn-primary" onClick={playAll} disabled={nodes.length === 0 || seqPlaying}>
-            ▶ play sequence
+          <button
+            className={seqPlaying ? 'btn-stop' : 'btn-primary'}
+            onClick={seqPlaying ? stop : playAll}
+            disabled={!seqPlaying && nodes.length === 0}
+          >
+            {seqPlaying ? '■ stop' : '▶ play sequence'}
           </button>
           <div className="mode-toggle compact" role="group" aria-label="sequence playback mode">
             <button
@@ -350,21 +361,18 @@ export default function App() {
               together
             </button>
           </div>
-          {(seqPlaying || active) && (
-            <button onClick={stop}>■ stop</button>
-          )}
         </div>
 
         <div className="toolbar-divider" />
 
-        <div className="toolbar-group">
-          <button className="btn-ghost" onClick={() => sortNodes('asc')} disabled={nodes.length < 2}>
-            sort ↑
-          </button>
-          <button className="btn-ghost" onClick={() => sortNodes('desc')} disabled={nodes.length < 2}>
-            sort ↓
-          </button>
-        </div>
+        <button
+          className="btn-ghost"
+          onClick={toggleSort}
+          disabled={nodes.length < 2}
+          title={`sort by ratio value, ${sortDir === 'asc' ? 'low → high' : 'high → low'}`}
+        >
+          sort {sortDir === 'asc' ? '↑' : '↓'}
+        </button>
 
         <div className="toolbar-divider" />
 

@@ -1,4 +1,4 @@
-# Interval Explorer
+# Pythagorean Interval Explorer
 
 A small web tool for exploring just intonation. Compose frequency ratios into scales and hear what they sound like.
 
